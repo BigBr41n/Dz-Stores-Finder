@@ -2,9 +2,17 @@ import User from "../models/user.model";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { SIGNUP, LOGIN, PASS } from "../utils/types";
-import { sendActivationEmail } from "../utils/mailer";
+import {
+  passwordChangedNotify,
+  sendActivationEmail,
+  sendForgotPassToken,
+} from "../utils/mailer";
 import { ApiError } from "../utils/apiError";
 import { signJwt, signRefreshToken } from "../utils/jwt.utils";
+
+
+
+
 
 export const signUp = async (userData: SIGNUP): Promise<SIGNUP> => {
   const activationToken = crypto.randomBytes(32).toString("hex");
@@ -22,6 +30,12 @@ export const signUp = async (userData: SIGNUP): Promise<SIGNUP> => {
   sendActivationEmail(userData.email, userData.password, activationToken);
   return newUser;
 };
+
+
+
+
+
+
 
 export const login = async (userData: LOGIN): Promise<LOGIN> => {
   const user = await User.findOne({ email: userData.email });
@@ -51,6 +65,11 @@ export const login = async (userData: LOGIN): Promise<LOGIN> => {
   };
 };
 
+
+
+
+
+
 export const activateAccount = async (token: string): Promise<boolean> => {
   const user = await User.findOne({
     activationToken: token,
@@ -71,6 +90,12 @@ export const activateAccount = async (token: string): Promise<boolean> => {
   return user.verified;
 };
 
+
+
+
+
+
+
 export const forgotPassword = async (email: string): Promise<boolean> => {
   const user = await User.findOne({ email });
   if (!user) throw new ApiError("Invalid Email!", 200);
@@ -83,10 +108,17 @@ export const forgotPassword = async (email: string): Promise<boolean> => {
 
   user.save();
 
-  await sendActivationEmail(email, user.name, changePassToken);
+  await sendForgotPassToken(email, user.name, changePassToken);
 
   return true;
 };
+
+
+
+
+
+
+
 
 export const forgotPasswordConfirmation = async (
   token: string,
@@ -109,6 +141,12 @@ export const forgotPasswordConfirmation = async (
   return true;
 };
 
+
+
+
+
+
+
 export const changePasswordService = async (
   password: PASS,
   userId: string
@@ -129,4 +167,6 @@ export const changePasswordService = async (
 
   user.password = password.new;
   await user.save();
+
+  await passwordChangedNotify(user.email, user.name);
 };
