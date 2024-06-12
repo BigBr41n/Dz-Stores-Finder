@@ -1,7 +1,7 @@
 import User from "../models/user.model";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
-import { SIGNUP, LOGIN } from "../utils/types";
+import { SIGNUP, LOGIN, PASS } from "../utils/types";
 import { sendActivationEmail } from "../utils/mailer";
 import { ApiError } from "../utils/apiError";
 import { signJwt, signRefreshToken } from "../utils/jwt.utils";
@@ -68,5 +68,65 @@ export const activateAccount = async (token: string): Promise<boolean> => {
   user.verified = true;
   await user.save();
 
+  return user.verified;
+};
+
+export const forgotPassword = async (email: string): Promise<boolean> => {
+  const user = await User.findOne({ email });
+  if (!user) throw new ApiError("Invalid Email!", 200);
+
+  const changePassToken = crypto.randomBytes(32).toString("hex");
+  const changePassTokenExpires = Date.now() + 1000 * 60 * 60;
+
+  user.changePassToken = changePassToken;
+  user.changePassTokenExpires = changePassTokenExpires;
+
+  user.save();
+
+  await sendActivationEmail(email, user.name, changePassToken);
+
   return true;
+};
+
+export const forgotPasswordConfirmation = async (
+  token: string,
+  newPassword: string
+): Promise<boolean> => {
+  const user = await User.findOne(
+    { changePassToken: token },
+    {
+      changePassTokenExpires: { $gt: Date.now() },
+    }
+  );
+
+  if (!user) {
+    throw new ApiError("Invalid Token or expired ", 401);
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  return true;
+};
+
+export const changePasswordService = async (
+  password: PASS,
+  userId: string
+): Promise<void> => {
+  if (!password.old || !password.new) {
+    throw new ApiError("You must provide both the old and new password", 400);
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError("User not found", 404);
+  }
+
+  const isMatch = await bcrypt.compare(password.old, user.password);
+  if (!isMatch) {
+    throw new ApiError("Invalid old password", 401);
+  }
+
+  user.password = password.new;
+  await user.save();
 };

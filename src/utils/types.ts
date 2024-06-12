@@ -10,3 +10,8 @@ export interface LOGIN {
   accessToken: string | null;
   refreshToken: string | null;
 }
+
+export interface PASS {
+  old: string | null;
+  new: string | null;
+}

@@ -33,14 +33,15 @@ const userSchema = new mongoose.Schema(
       },
     ],
     activationToken: { type: String },
-    activeExpires: { type: Date },
+    activeExpires: { type: Number },
     verified: {
       type: Boolean,
       default: false,
     },
-    resetPasswordToken: {
+    changePassToken: {
       type: String,
     },
+    changePassTokenExpires: { type: Number },
     passwordChangedAt: {
       type: Date,
     },
