@@ -34,6 +34,13 @@ export const login = async (userData: LOGIN): Promise<LOGIN> => {
     throw new ApiError("Invalid credentials!", 401);
   }
 
+  if (!user.verified) {
+    throw new ApiError(
+      "please verify your account , we sent to you an email !",
+      401
+    );
+  }
+
   const accessToken = signJwt({ id: user._id.toString() });
   const refreshToken = signRefreshToken({ id: user._id.toString() });
 
@@ -42,4 +49,24 @@ export const login = async (userData: LOGIN): Promise<LOGIN> => {
     accessToken,
     refreshToken,
   };
+};
+
+export const activateAccount = async (token: string): Promise<boolean> => {
+  const user = await User.findOne({
+    activationToken: token,
+    activeExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    throw new ApiError("Invalid or expired activation token", 400);
+  }
+
+  if (user.verified) {
+    throw new ApiError("Account is already activated", 400);
+  }
+
+  user.verified = true;
+  await user.save();
+
+  return true;
 };
