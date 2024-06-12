@@ -1,6 +1,6 @@
 import http from "node:http";
 import { app } from "./app";
-
+import logger from "./utils/logger";
 const PORT = process.env.PORT || 3000;
 
 //creating the server
@@ -11,14 +11,14 @@ server.maxHeadersCount = 20;
 
 //start the server based on the port in .env file
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  logger.info(`Server is running on port ${PORT}`);
 });
 
 // Handle rejection outside express
 process.on("unhandledRejection", (err: any) => {
-  console.error(`UnhandledRejection Errors: ${err.name} | ${err.message}`);
+  logger.error(`UnhandledRejection Errors: ${err.name} | ${err.message}`);
   server.close(() => {
-    console.error(`Shutting down....`);
+    logger.error(`Shutting down....`);
     process.exit(1);
   });
 });

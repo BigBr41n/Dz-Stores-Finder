@@ -26,11 +26,14 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.13",
+    "pino": "^9.2.0",
+    "pino-pretty": "^11.2.1",
     "supertest": "^7.0.0",
     "uuid": "^10.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/morgan": "^1.9.9",
