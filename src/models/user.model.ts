@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["admin", "user", "editor"],
       default: "user",
-      required: true,
     },
     password: {
       type: String,
@@ -33,6 +32,8 @@ const userSchema = new mongoose.Schema(
         ref: "Store",
       },
     ],
+    activationToken: { type: String },
+    activeExpires: { type: Date },
     verified: {
       type: Boolean,
       default: false,
@@ -54,8 +55,13 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
   }
-  this.password = await bcrypt.hash(this.password, process.env.HASH_);
-  next();
+  try {
+    const saltRounds = process.env.HASH_ ? parseInt(process.env.HASH_, 10) : 10;
+    this.password = await bcrypt.hash(this.password, saltRounds);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 const User = mongoose.model("User", userSchema);
