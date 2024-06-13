@@ -47,8 +47,8 @@ export const loginController = asyncHandler(
     const tokens = await loginService(req.body as LOGIN);
     res.status(200).json({
       message: "user logged in successfully",
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
+      accessToken: tokens?.accessToken,
+      refreshToken: tokens?.refreshToken,
     });
   }
 );
