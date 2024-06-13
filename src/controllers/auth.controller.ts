@@ -65,7 +65,7 @@ export const loginController = asyncHandler(
  */
 export const activateAccountController = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await activateAccountService(req.params.token as string);
+    const result = await activateAccountService(req.query.token as string);
     if (!result) next(new ApiError("failed to activate", 500));
     if (result) {
       res.status(200).json({ message: "verified successfully" });
@@ -102,12 +102,12 @@ export const forgotPasswordController = asyncHandler(
 /**
  * DESC   : confirm the ownership of the account by confirming the ownership of the email
  * ACCESS : unprotected
- * ROUTE  : /api/v1/auth/forgot-password?token= 
+ * ROUTE  : /api/v1/auth/verifyResetCode?token= 
  */
 export const forgotPasswordConfirmationController = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await forgotPasswordConfirmation(
-      req.body.token as string,
+      req.query.token as string,
       req.body.password as string
     );
     if (result) {
