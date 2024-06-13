@@ -14,7 +14,7 @@ import { signJwt, signRefreshToken } from "../utils/jwt.utils";
 
 
 
-export const signUp = async (userData: SIGNUP): Promise<SIGNUP> => {
+export const signUpService = async (userData: SIGNUP): Promise<SIGNUP> => {
   const activationToken = crypto.randomBytes(32).toString("hex");
 
   const activeExpires = Date.now() + 1000 * 60 * 60; // 1h
@@ -37,7 +37,7 @@ export const signUp = async (userData: SIGNUP): Promise<SIGNUP> => {
 
 
 
-export const login = async (userData: LOGIN): Promise<LOGIN> => {
+export const loginService = async (userData: LOGIN): Promise<LOGIN> => {
   const user = await User.findOne({ email: userData.email });
   if (!user) {
     throw new ApiError("User not found!", 404);
@@ -70,7 +70,7 @@ export const login = async (userData: LOGIN): Promise<LOGIN> => {
 
 
 
-export const activateAccount = async (token: string): Promise<boolean> => {
+export const activateAccountService = async (token: string): Promise<boolean> => {
   const user = await User.findOne({
     activationToken: token,
     activeExpires: { $gt: Date.now() },
@@ -96,7 +96,7 @@ export const activateAccount = async (token: string): Promise<boolean> => {
 
 
 
-export const forgotPassword = async (email: string): Promise<boolean> => {
+export const forgotPasswordService = async (email: string): Promise<boolean> => {
   const user = await User.findOne({ email });
   if (!user) throw new ApiError("Invalid Email!", 200);
 
@@ -148,24 +148,23 @@ export const forgotPasswordConfirmation = async (
 
 
 export const changePasswordService = async (
-  password: PASS,
-  userId: string
+  data : PASS
 ): Promise<void> => {
-  if (!password.old || !password.new) {
+  if (!data.old || !data.new) {
     throw new ApiError("You must provide both the old and new password", 400);
   }
 
-  const user = await User.findById(userId);
+  const user = await User.findById(data.userId);
   if (!user) {
     throw new ApiError("User not found", 404);
   }
 
-  const isMatch = await bcrypt.compare(password.old, user.password);
+  const isMatch = await bcrypt.compare(data.old, user.password);
   if (!isMatch) {
     throw new ApiError("Invalid old password", 401);
   }
 
-  user.password = password.new;
+  user.password = data.new;
   await user.save();
 
   await passwordChangedNotify(user.email, user.name);

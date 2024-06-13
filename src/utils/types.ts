@@ -1,3 +1,7 @@
+import { Request } from "express";
+
+
+
 export interface SIGNUP {
   name: string;
   email: string;
@@ -12,6 +16,12 @@ export interface LOGIN {
 }
 
 export interface PASS {
+  userId : string | undefined;
   old: string | null;
   new: string | null;
 }
+
+
+export interface AuthRequest extends Request {
+  user?: {id : string}
+} 
