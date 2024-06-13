@@ -1,10 +1,17 @@
 import nodemailer, { Transporter } from "nodemailer";
 import logger from "./logger";
+import { ApiError } from "./apiError";
 
 interface EmailTemplateProps {
   activationToken: string;
   username: string;
 }
+
+
+
+
+
+
 
 const transporter: Transporter = nodemailer.createTransport({
   service: process.env.SERVICE_EMAIL as string,
@@ -16,6 +23,14 @@ const transporter: Transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASSWORD,
   },
 });
+
+
+
+
+
+
+
+
 
 export const sendActivationEmail = async (
   email: string,
@@ -42,8 +57,18 @@ export const sendActivationEmail = async (
     logger.info(`Activation email sent to ${email}`);
   } catch (err) {
     logger.error(err);
+    throw new ApiError("Internal server Error", 500);
   }
 };
+
+
+
+
+
+
+
+
+
 
 export const sendForgotPassToken = async (
   email: string,
@@ -70,8 +95,20 @@ export const sendForgotPassToken = async (
     logger.info(`Reset Password sent to  ${email}`);
   } catch (err) {
     logger.error(err);
+    throw new ApiError("Internal server Error", 500);
   }
 };
+
+
+
+
+
+
+
+
+
+
+
 
 export const passwordChangedNotify = async (
   email: string,
@@ -96,5 +133,6 @@ export const passwordChangedNotify = async (
     logger.info(`Reset Password sent to  ${email}`);
   } catch (err) {
     logger.error(err);
+    throw new ApiError("Internal server Error", 500);
   }
 };
