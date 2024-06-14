@@ -25,3 +25,18 @@ export interface PASS {
 export interface AuthRequest extends Request {
   user?: {id : string}
 } 
+
+export interface STORE {
+  name : string ;
+  description : string ; 
+  phone : string ; 
+  email : string ; 
+  website : string ; 
+  keywords : string[];
+  owner : string ; 
+  wilaya : string; 
+  city : string; 
+  longitude : string ;
+  latitude : string ;
+  storeType : string ;
+}

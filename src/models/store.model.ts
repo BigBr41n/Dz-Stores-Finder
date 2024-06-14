@@ -1,4 +1,25 @@
-import mongoose from "mongoose";
+import mongoose ,{ Document} from "mongoose";
+
+export interface IStore {
+  storeOwner: mongoose.Schema.Types.ObjectId;
+  storeName: string;
+  verified?: boolean;
+  storeType?: 'real' | 'virtual';
+  wilaya?: string;
+  city: string;
+  longitude?: string;
+  latitude?: string;
+  phone?: string;
+  website?: string;
+  socialMediaLinks?: { name: string; link: string }[];
+  rating?: number;
+  description?: string;
+  keywords?: string[];
+}
+
+export interface IStoreDocument extends IStore, Document {}
+
+
 
 // Define the Store schema
 const storeSchema = new mongoose.Schema(
@@ -25,6 +46,10 @@ const storeSchema = new mongoose.Schema(
     wilaya: {
       type: String,
       trim: true,
+    },
+    city : {
+      type : String,
+      required: [true, "City is required"],
     },
     longitude: {
       type: String,
