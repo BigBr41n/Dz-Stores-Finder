@@ -45,6 +45,9 @@ const userSchema = new mongoose.Schema(
     passwordChangedAt: {
       type: Date,
     },
+    ratedStores : [{
+      type: mongoose.Schema.Types.ObjectId,
+    }]
   },
   {
     timestamps: true,

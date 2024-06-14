@@ -42,3 +42,12 @@ export interface STORE {
   storeType : string ;
   socialMediaLinks?: { name: string; link: string }[]
 }
+
+
+
+
+export interface RATING {
+  storeId : string ; 
+  userId : Schema.Types.ObjectId ;
+  rating : number ; 
+}
