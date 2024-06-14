@@ -22,7 +22,7 @@ export interface IStoreDocument extends IStore, Document {}
 
 
 // Define the Store schema
-const storeSchema = new mongoose.Schema(
+const storeSchema = new mongoose.Schema<IStoreDocument>(
   {
     storeOwner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -91,6 +91,7 @@ const storeSchema = new mongoose.Schema(
     keywords: [
       {
         type: String,
+        required: true,
       },
     ],
   },
@@ -99,5 +100,5 @@ const storeSchema = new mongoose.Schema(
   }
 );
 
-const Store = mongoose.model("Store", storeSchema);
+const Store = mongoose.model<IStoreDocument>("Store", storeSchema);
 export default Store;

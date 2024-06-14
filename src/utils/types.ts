@@ -1,4 +1,5 @@
 import { Request } from "express";
+import { Schema } from "mongoose";
 
 
 
@@ -31,12 +32,13 @@ export interface STORE {
   description : string ; 
   phone : string ; 
   email : string ; 
-  website : string ; 
+  website? : string ; 
   keywords : string[];
-  owner : string ; 
+  owner : Schema.Types.ObjectId ; 
   wilaya : string; 
   city : string; 
-  longitude : string ;
-  latitude : string ;
+  longitude? : string ;
+  latitude? : string ;
   storeType : string ;
+  socialMediaLinks?: { name: string; link: string }[]
 }
