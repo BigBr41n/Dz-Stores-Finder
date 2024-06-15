@@ -20,7 +20,12 @@ import logger from "../utils/logger";
 
 
 
-
+/**
+ *service to register a new user  
+ *@param {SIGNUP} userData - user data needed to register
+ *@returns {Promise<SIGNUP | undefined>} - The created user document.// TODO : ADD THE USER DOCUMENT TYPE
+ *@throws {ApiError} -if the user registration failed
+**/
 
 export const signUpService = async (
   userData: SIGNUP
@@ -66,6 +71,12 @@ export const signUpService = async (
 
 
 
+/**
+ *service to login a registered user 
+ *@param {SIGNUP} userData - user data needed to register
+ *@returns {Promise<LOGIN | undefined>} - the logged in user with the access token & refresh token 
+ *@throws {ApiError} -if the user login operation failed
+**/
 export const loginService = async (
   userData: LOGIN
 ): Promise<LOGIN | undefined> => {
@@ -113,6 +124,13 @@ export const loginService = async (
 
 
 
+
+/**
+ *service to activate the new registered user account
+ *@param {string} token - user token that got from the sent email
+ *@returns {Promise<boolean>} - if the account activated send true 
+ *@throws {ApiError} -if the user activation operation failed
+**/
 export const activateAccountService = async (
   token: string
 ): Promise<boolean> => {
@@ -151,6 +169,14 @@ export const activateAccountService = async (
 
 
 
+
+
+/**
+ *service to reset password if forgotten 
+ *@param {string} email - user email that want to reset his password
+ *@returns {Promise<boolean | undefined>} - if the user found and email sent ,  send true 
+ *@throws {ApiError} -return API error if the operation fails
+**/
 export const forgotPasswordService = async (
   email: string
 ): Promise<boolean | undefined> => {
@@ -187,6 +213,13 @@ export const forgotPasswordService = async (
 
 
 
+/**
+ *service to activate the new registered user account
+ *@param {string} token - user token that got from the sent email
+ *@param {string} newPassword - the new password of the user account
+ *@returns {Promise<boolean | undefined>} - if the reset password succeeded sent true 
+ *@throws {ApiError} -if any error occurred
+**/
 export const forgotPasswordConfirmation = async (
   token: string,
   newPassword: string
@@ -225,6 +258,13 @@ export const forgotPasswordConfirmation = async (
 
 
 
+
+/**
+ *service to activate the new registered user account
+ *@param {PASS} data - user token that got from the sent email
+ *@returns {Promise<void>} - 
+ *@throws {ApiError} -if any error occurs throw error to the controller
+**/
 export const changePasswordService = async (data: PASS): Promise<void> => {
   try {
     if (!data.old || !data.new) {
