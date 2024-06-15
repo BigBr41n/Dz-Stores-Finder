@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { Schema } from "mongoose";
+import { Types } from "mongoose";
 
 
 
@@ -34,7 +34,7 @@ export interface STORE {
   email : string ; 
   website? : string ; 
   keywords : string[];
-  owner : Schema.Types.ObjectId ; 
+  owner : Types.ObjectId ; 
   wilaya : string; 
   city : string; 
   longitude? : string ;
@@ -47,7 +47,7 @@ export interface STORE {
 
 
 export interface RATING {
-  storeId : string ; 
-  userId : Schema.Types.ObjectId ;
+  storeId : Types.ObjectId ; 
+  userId : Types.ObjectId ;
   rating : number ; 
 }

@@ -9,14 +9,14 @@ router
     .delete('/delete-store/:id' , deleteStoreController)
     .get('/get-all-stores' , getAllStoresController)
     .get('/get-store-byId/:id' , getStoreByIdController)
-    .post('/upload-store-image', uploadStoreImageController);
+    
+    //.post('/upload-store-image', uploadStoreImageController);
 
-    .post('/add-store-review', addStoreReviewController);
-    .delete('/delete-store-review/:id', addStoreReviewController);
-    .get('/store-reviews/:id', getStoreReviewsController);
+    .post('/add-store-rating/:id', addStoreReviewController);
+    .delete('/delete-store-rating/:id', addStoreReviewController);
 
-    .get('/store-analytics', storeAnalyticsController);
-    .get('/filter-stores-by-wilaya', filterStoresController);
-    .get('/search-stores', searchStoresController);
-    .get('/get-store-byName', getStoreByNameController);
+
+    .get('/filter-stores-by-wilaya', filterStoresController); //with query
+    .get('/search-stores', searchStoresController);  //with query
+    .get('/get-store-byName', getStoreByNameController);  //with query
 */
