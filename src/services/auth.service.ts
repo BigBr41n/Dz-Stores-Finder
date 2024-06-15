@@ -1,4 +1,4 @@
-import User from "../models/user.model";
+import User, { IUserDocument } from "../models/user.model";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { SIGNUP, LOGIN, PASS } from "../utils/types";
@@ -10,6 +10,7 @@ import {
 import { ApiError } from "../utils/apiError";
 import { signJwt, signRefreshToken } from "../utils/jwt.utils";
 import logger from "../utils/logger";
+import { Schema } from "mongoose";
 
 
 
@@ -29,7 +30,7 @@ import logger from "../utils/logger";
 
 export const signUpService = async (
   userData: SIGNUP
-): Promise<SIGNUP | undefined> => {
+): Promise<IUserDocument | undefined> => {
   try {
     const activationToken = crypto.randomBytes(32).toString("hex");
     const activeExpires = Date.now() + 1000 * 60 * 60;
@@ -98,8 +99,8 @@ export const loginService = async (
       );
     }
 
-    const accessToken = signJwt({ id: user._id.toString() });
-    const refreshToken = signRefreshToken({ id: user._id.toString() });
+    const accessToken = signJwt({ id: (user._id as Schema.Types.ObjectId).toString() });
+    const refreshToken = signRefreshToken({ id: (user._id as Schema.Types.ObjectId).toString() });
 
     return {
       ...userData,
