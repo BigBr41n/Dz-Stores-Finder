@@ -35,7 +35,7 @@ exports.protect = asyncHandler(
           )
         );
       }
-      req.user = {id : currentUser._id.toString()};
+      req.user = {id : currentUser._id.toString() , role : currentUser.role};
       next();
     }
     else if (!decoded.valid && decoded.expired) {
