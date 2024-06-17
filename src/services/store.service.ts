@@ -4,6 +4,9 @@ import { ApiError } from "../utils/apiError";
 import logger from "../utils/logger";
 import { IStoreDocument } from "../models/store.model";
 import User from "../models/user.model";
+import { Schema } from "mongoose";
+import path from "path";
+import fs from 'fs'
 
 
 
@@ -330,7 +333,7 @@ export const addStoreRatingService = async (
     }
 
     // check if the user has already rated this store
-    if (user.ratedStores.includes(rating.storeId)) {
+    if (user.ratedStores.includes((rating.storeId as unknown as Schema.Types.ObjectId))) {
       logger.warn(
         `User ${rating.userId} has already rated store ${rating.storeId}`
       );
@@ -356,7 +359,7 @@ export const addStoreRatingService = async (
     }
 
     // update the user's ratedStores array
-    user.ratedStores.push(rating.storeId);
+    user.ratedStores.push((rating.storeId as unknown as Schema.Types.ObjectId));
     await user.save();
 
     logger.info(
@@ -522,5 +525,76 @@ export const searchStoresByNameService = async (
       `Internal Server Error: An unexpected error occurred during searching for stores with name ${storeName}`,
       500
     );
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * updates or add a store logo for a given store.
+ *
+ * @param {string} storeId - the ID of the store to update.
+ * @param {string} userId - the ID of the user making the request.
+ * @param {string} filename - the new filename of the store logo.
+ * @returns {Promise<IStoreDocument>} - returns the updated store document.
+ * @throws {ApiError} - throws an error if the store is not found, the user does not own the store, or an internal error occurs.
+ */
+export const addStoreLogoOrUpdateService = async (
+  storeId: string,
+  userId: string,
+  filename: string
+): Promise<IStoreDocument> => {
+  try {
+    // chck if the store exists
+    const store = await Store.findById(storeId);
+    if (!store) throw new ApiError('Store not found!', 404);
+
+    // check if the user owns this store
+    if (userId !== store.storeOwner.toString()) {
+      throw new ApiError("You cannot change a store's data that you don't own", 401);
+    }
+
+    // check if the store already has a logo to delete before adding the new one
+    if (store.storeLogo) {
+      const filePath = path.join(__dirname, '..', '..', 'uploads', 'logo', store.storeLogo);
+      try {
+        fs.unlinkSync(filePath);
+        logger.info('Old logo deleted successfully');
+      } catch (err) {
+        throw new ApiError('Error while updating logo', 500);
+      }
+    }
+
+    // update the store's logo
+    store.storeLogo = filename;
+    const updatedStore = await store.save();
+
+    // return the updated store document
+    return updatedStore;
+  } catch (err: any) {
+    logger.error('Error while updating store logo', {
+      error: err.message,
+      stack: err.stack,
+    });
+
+    // re-throw known ApiErrors
+    if (err instanceof ApiError) {
+      throw err;
+    }
+
+    // throw a generic server error for unknown issues
+    throw new ApiError('Internal Server Error: An unexpected error occurred while updating the store logo', 500);
   }
 };

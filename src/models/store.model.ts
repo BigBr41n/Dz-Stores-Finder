@@ -15,6 +15,7 @@ export interface IStore {
   rating?: number;
   description?: string;
   keywords?: string[];
+  storeLogo : string;
 }
 
 export interface IStoreDocument extends IStore, Document {}
@@ -94,6 +95,9 @@ const storeSchema = new mongoose.Schema<IStoreDocument>(
         required: true,
       },
     ],
+    storeLogo : {
+      type : String ,
+    },
   },
   {
     timestamps: true,
