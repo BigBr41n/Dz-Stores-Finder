@@ -18,7 +18,9 @@ export interface IStore {
   storeLogo : string;
 }
 
-export interface IStoreDocument extends IStore, Document {}
+export interface IStoreDocument extends IStore, Document {
+  id: mongoose.Types.ObjectId;
+}
 
 
 
