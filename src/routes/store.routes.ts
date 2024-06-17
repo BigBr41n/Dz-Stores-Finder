@@ -12,17 +12,23 @@ import {
   uploadStoreImageController,
 } from '../controllers/store.controller';
 
+
+import {protect} from '../middleware/checkAuth';
+import {allowedTo} from '../middleware/authorization'
+
 const router = express.Router();
 
 
-//NEXT : add authentication & authorization middleware 
 
+//middlewares
+router.use(protect , allowedTo("user"));
+
+
+router.route("/").get(getAllStoresController).post(addNewStoreController)
 
 router
-  .post('/', addNewStoreController) // endpoint to add a new store
   .put('/:id', updateStoreController) // endpoint to update a store by ID
   .delete('/:id', deleteStoreController) // endpoint to delete a store by ID
-  .get('/', getAllStoresController) // endpoint to get all stores
   .get('/:id', getStoreByIdController) // endpoint to get a store by ID
 
   .post('/:storeId/images', uploadStoreImageController) // endpoint to upload a store image by store ID

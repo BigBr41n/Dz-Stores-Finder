@@ -5,7 +5,7 @@ import User from "../models/user.model";
 import { AuthRequest } from "../utils/types";
 import { NextFunction, Response } from "express";
 
-exports.protect = asyncHandler(
+export const protect = asyncHandler(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     //check if token exist, if exist get
     if (

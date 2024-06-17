@@ -3,7 +3,7 @@ import { ApiError } from "../utils/apiError";
 import { AuthRequest } from "../utils/types";
 import { NextFunction, Response } from "express";
 
-exports.allowedTo = (...roles: string[]) =>
+export const allowedTo = (...roles: string[]) =>
   asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
     //  access roles
     //  access registered user (req.user.role)
