@@ -10,15 +10,29 @@ import {
   changePasswordController,
 } from "../controllers/auth.controller";
 
+import validate from "../middleware/validator";
+
+import {
+  signUpSchema,
+  loginSchema,
+  activateSchema,
+  forgotPasswordSchema,
+  changePasswordSchema,
+} from "../resources-schema/user.schema";
+
+
+
+
+
+
 router
-  .post("/signup", signUpController)
-  .post("/login", loginController)
-  .get("/verify", activateAccountController) //with query token
-  .post("/forgotPassword", forgotPasswordController)
-  .post("/verifyResetCode", forgotPasswordConfirmationController) //with query token
-  .put("/change-password", changePasswordController);
+  .post("/signup", validate(signUpSchema), signUpController)
+  .post("/login", validate(loginSchema), loginController)
+  .get("/verify", validate(activateSchema), activateAccountController) //with query token
+  .post("/forgotPassword", validate(forgotPasswordSchema), forgotPasswordController)
+  .post("/verifyResetCode", validate(activateSchema), forgotPasswordConfirmationController) //with query token
+  .put("/change-password", validate(changePasswordSchema), changePasswordController);
+
+  //TODO : REFRESH TOKEN ROUTE 
 
 export default router;
-
-//router.post('/signup', signupValidator, signupController);
-//router.post('/login', loginValidator, loginController);
