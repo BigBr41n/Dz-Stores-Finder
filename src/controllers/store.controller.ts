@@ -98,8 +98,8 @@ export const addStoreReviewController = asyncHandler(
 
 export const filterStoresController = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { wilaya } = req.params;
-    const stores = await storeService.filterStoresService(wilaya);
+    const  {wilaya}  = req.query;
+    const stores = await storeService.filterStoresService(wilaya as string);
     res.status(200).json(stores);
   }
 );

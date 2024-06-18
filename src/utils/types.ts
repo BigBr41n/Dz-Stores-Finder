@@ -34,7 +34,6 @@ export interface STORE {
   email : string ; 
   website? : string ; 
   keywords : string[];
-  owner : Types.ObjectId ; 
   wilaya : string; 
   city : string; 
   longitude? : string ;
