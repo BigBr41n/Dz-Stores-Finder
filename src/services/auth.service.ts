@@ -99,8 +99,8 @@ export const loginService = async (
       );
     }
 
-    const accessToken = signJwt({ id: (user._id as Schema.Types.ObjectId).toString() });
-    const refreshToken = signRefreshToken({ id: (user._id as Schema.Types.ObjectId).toString() });
+    const accessToken = signJwt({ id: user._id.toString() });
+    const refreshToken = signRefreshToken({ id: user._id.toString() });
 
     return {
       ...userData,

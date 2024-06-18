@@ -10,8 +10,9 @@ import { globalError } from "./middleware/errorMiddleware";
 import MountROutes from "./router";
 import logger from "./utils/logger";
 
-//
 dotenv.config();
+
+
 
 // Connect with db
 connect();
