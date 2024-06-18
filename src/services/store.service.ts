@@ -298,7 +298,7 @@ export const getStoreByIdService = async (
 
     // Throw a generic server error for unknown issues
     throw new ApiError(
-      "Internal Server Error: An unexpected error occurred during retrieving all stores",
+      "Internal Server Error: An unexpected error occurred during retrieving stores by Id",
       500
     );
   }
