@@ -3,6 +3,7 @@ import * as storeService from "../services/store.service";
 import { STORE, RATING , AuthRequest } from "../utils/types";
 import asyncHandler from "express-async-handler";
 import { Types } from "mongoose";
+import { redisClient } from "../middleware/cache";
 
 
 
@@ -60,6 +61,13 @@ export const deleteStoreController = asyncHandler(
 export const getAllStoresController = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const stores = await storeService.getAllStoresService();
+
+    const key = req.originalUrl;
+    const expiration = (60 * 60*2); // 2 hours in seconds
+
+    redisClient.set(key, JSON.stringify(stores));
+    redisClient.expireAt(key, expiration);
+
     res.status(200).json(stores);
   }
 );
@@ -72,6 +80,12 @@ export const getStoreByIdController = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const store = await storeService.getStoreByIdService(id);
+
+    const key = req.originalUrl;
+    const expiration = (60 * 60*2); // 2 hours in seconds
+    redisClient.set(key, JSON.stringify(store));
+    redisClient.expireAt(key, expiration);
+
     res.status(200).json(store);
   }
 );
@@ -100,6 +114,13 @@ export const filterStoresController = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const  {wilaya}  = req.query;
     const stores = await storeService.filterStoresService(wilaya as string);
+
+    const key = req.originalUrl;
+    const expiration = (60 * 60*2); // 2 hours in seconds
+    redisClient.set(key, JSON.stringify(stores));
+    redisClient.expireAt(key, expiration);
+
+
     res.status(200).json(stores);
   }
 );
@@ -117,6 +138,13 @@ export const searchStoresController = async (
   const stores = await storeService.searchStoresService(
     searchTerm as string | string[]
   );
+
+  const key = req.originalUrl;
+  const expiration = (60 * 60*2); // 2 hours in seconds
+
+  redisClient.set(key, JSON.stringify(stores));
+  redisClient.expireAt(key, expiration);
+
   res.status(200).json(stores);
 };
 
@@ -129,6 +157,13 @@ export const getStoreByNameController = asyncHandler(
     const stores = await storeService.searchStoresByNameService(
       storeName as string
     );
+
+
+    const key = req.originalUrl;
+    const expiration = (60 * 60*2); // 2 hours in seconds
+    redisClient.set(key, JSON.stringify(stores));
+    redisClient.expireAt(key, expiration);
+
     res.status(200).json(stores);
   }
 );

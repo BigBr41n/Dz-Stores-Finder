@@ -13,6 +13,10 @@ import {
 } from '../controllers/store.controller';
 
 
+
+import cache from '../middleware/cache';
+
+
 import {protect} from '../middleware/checkAuth';
 import {allowedTo} from '../middleware/authorization'
 
@@ -26,18 +30,18 @@ const router = express.Router();
 
 
 router
-    .get("/" , getAllStoresController)
-    .get('/:id', validate(schema.getStoreByIdSchema), getStoreByIdController) //endpoint to get a store by Id
-    .get('/filter-by-wilaya', validate(schema.filterStoresSchema),filterStoresController) // endpoint to filter stores by wilaya (with query parameter)
+    .get("/" , cache ,getAllStoresController)
+    .get('/:id', [cache ,validate(schema.getStoreByIdSchema)], getStoreByIdController) //endpoint to get a store by Id
+    .get('/filter-by-wilaya',  [cache ,validate(schema.filterStoresSchema)],filterStoresController) // endpoint to filter stores by wilaya (with query parameter)
     .get('/search',validate(schema.searchStoresSchema) ,searchStoresController) // endpoint to search stores (with query parameter)
-    .get('/search-by-name',validate(schema.getStoreByNameSchema), getStoreByNameController); // endpoint to search stores by name (with query parameter)
+    .get('/search-by-name', [cache,validate(schema.getStoreByNameSchema)], getStoreByNameController); // endpoint to search stores by name (with query parameter)
   
 
 
 
 
 //middlewares
-router.use(protect , allowedTo("user"));
+router.use(protect , allowedTo("user","admin"));
 
 
 
