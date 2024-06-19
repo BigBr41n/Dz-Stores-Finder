@@ -7,7 +7,7 @@ export const signUpSchema = object({
     }),
     email: string({
       required_error: "email is required",
-    }),
+    }).email() ,
     password: string({
       required_error: "password is required",
     }),
@@ -21,7 +21,7 @@ export const loginSchema = object({
   body: object({
     email: string({
       required_error: "email is required",
-    }),
+    }).email(),
     password: string({
       required_error: "password is required",
     }),
@@ -46,7 +46,7 @@ export const forgotPasswordSchema = object({
     body : object({
         email : string({
             required_error : "token is required"
-        })
+        }).email()
     })
 })
 
