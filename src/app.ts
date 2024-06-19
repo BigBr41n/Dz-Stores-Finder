@@ -9,6 +9,7 @@ import { ApiError } from "./utils/apiError";
 import { globalError } from "./middleware/errorMiddleware";
 import MountROutes from "./router";
 import logger from "./utils/logger";
+import { globalLimiter } from "./middleware/rate-limit";
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use(compression());
 // Middlewares
 app.use(express.json({ limit: "5mb" }));
 app.use(express.static(path.join(__dirname, "uploads")));
+app.use(globalLimiter);
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));

@@ -1,6 +1,7 @@
 import { Express } from "express";
 import authRoutes from "./routes/auth.routes"
 import storeRoutes from "./routes/store.routes"
+import { authLimiter } from "./middleware/rate-limit";
 
 
 
@@ -12,7 +13,7 @@ function routes(app: Express) {
 
 
   //auth routes 
-  app.use('/api/v1/auth' , authRoutes)
+  app.use('/api/v1/auth' ,authLimiter, authRoutes)
 
 
   //store routes 
