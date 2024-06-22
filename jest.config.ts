@@ -8,13 +8,13 @@ const config: Config = {
   collectCoverage: true,
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  //coverageDirectory: "coverage",
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: "v8",
+  //coverageProvider: "v8",
 
   // A list of reporter names that Jest uses when writing coverage reports
-  coverageReporters: ["json", "text", "lcov", "clover"],
+  //coverageReporters: ["json", "text", "lcov", "clover"],
 
   // An array of file extensions your modules use
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
@@ -41,6 +41,8 @@ const config: Config = {
 
   // Automatically restore mock state and implementation before every test
   restoreMocks: true,
+
+  setupFiles: ['<rootDir>/jest.setup.ts'], 
 };
 
 export default config;

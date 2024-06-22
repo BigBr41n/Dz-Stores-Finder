@@ -48,7 +48,7 @@ export const signUpService = async (
 
     await sendActivationEmail(
       userData.email,
-      userData.password,
+      userData.name,
       activationToken
     );
 
@@ -56,11 +56,12 @@ export const signUpService = async (
   } catch (err: any) {
     logger.error("Error during sign up service:", err);
 
-    //delete the user from the DB to avoid any error in the next registration
-    await User.findOneAndDelete({ email: userData.email });
-
+  
     //throw the error to the controller
     if (err instanceof ApiError) throw err;
+
+    //delete the user from the DB to avoid any error in the next registration
+    await User.findOneAndDelete({ email: userData.email });
     throw new ApiError("Sign up failed", 500);
   }
 };
