@@ -24,7 +24,7 @@ jest.mock("../models/user.model");
 jest.mock("crypto");
 jest.mock("bcryptjs");
 jest.mock("../utils/mailer");
-jest.mock("../utils/apiError");
+//jest.mock("../utils/apiError");
 jest.mock("../utils/jwt.utils");
 jest.mock("../utils/logger");
 jest.mock("nodemailer");
@@ -89,7 +89,14 @@ describe("Auth Services", () => {
 
       (User.findOne as jest.Mock).mockResolvedValue(userData);
 
-      await expect(signUpService(userData)).rejects.toThrow();
+
+ /*      try {
+        await signUpService(userData);
+      } catch (err) {
+        console.log('Caught error:', err);
+      } */
+
+      await expect(signUpService(userData)).rejects.toThrow(ApiError);
       expect(User.findOne).toHaveBeenCalledWith({ email: userData.email });
       expect(User.create).not.toHaveBeenCalled();
       expect(sendActivationEmail).not.toHaveBeenCalled();
