@@ -4,4 +4,4 @@ private.key
 public.key
 refTokenPrivate.key
 refTokenPublic.key
-covrage
+coverage/
