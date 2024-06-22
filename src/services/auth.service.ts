@@ -240,6 +240,8 @@ export const forgotPasswordConfirmation = async (
     }
 
     user.password = newPassword;
+    user.changePassToken = "" ;
+    user.changePassTokenExpires = 0 ;
     await user.save();
 
     return true;

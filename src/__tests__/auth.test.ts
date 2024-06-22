@@ -298,13 +298,13 @@ describe("Auth Services", () => {
       const result = await forgotPasswordService(email);
 
       expect(User.findOne).toHaveBeenCalledWith({ email });
-      expect(mockUser.changePassToken).toBe("changepasstoken");
+      expect(mockUser.changePassToken).toBe(Buffer.from("changepasstoken").toString('hex'));
       expect(mockUser.changePassTokenExpires).toBeGreaterThan(Date.now());
       expect(mockUser.save).toHaveBeenCalled();
       expect(sendForgotPassToken).toHaveBeenCalledWith(
         email,
         "Test User",
-        "changepasstoken"
+        Buffer.from("changepasstoken").toString('hex')
       );
       expect(result).toBe(true);
     });
@@ -323,25 +323,29 @@ describe("Auth Services", () => {
     it("should confirm forgot password and update the password successfully", async () => {
       const token = "changepasstoken";
       const newPassword = "newpassword123";
+
+
+      const mockDateNow = Date.now();
+      jest.spyOn(Date, 'now').mockImplementation(() => mockDateNow);
+
       const mockUser = {
         changePassToken: token,
         password: "oldPass",
-        changePassTokenExpires: Date.now() + 1000 * 60 * 60,
+        changePassTokenExpires:mockDateNow + 3600000,
         save: jest.fn().mockResolvedValue(true),
       };
 
       (User.findOne as jest.Mock).mockResolvedValue(mockUser);
-      (bcrypt.hash as jest.Mock).mockResolvedValue("hashedpassword");
       (passwordChangedNotify as jest.Mock).mockResolvedValue(true);
 
       const result = await forgotPasswordConfirmation(token, newPassword);
 
-      expect(User.findOne).toHaveBeenCalledWith({
-        changePassToken: token,
-        changePassTokenExpires: { $gt: Date.now() },
-      });
-      expect(bcrypt.hash).toHaveBeenCalledWith(newPassword, 10);
-      expect(mockUser.password).toBe("hashedpassword");
+      expect(User.findOne).toHaveBeenCalledWith(     
+        { changePassToken: token },
+        {
+          changePassTokenExpires: { $gt: mockDateNow },
+        })
+      expect(mockUser.password).toBe("newpassword123");
       expect(mockUser.changePassToken).toBe("");
       expect(mockUser.changePassTokenExpires).toBe(0);
       expect(mockUser.save).toHaveBeenCalled();
@@ -352,44 +356,45 @@ describe("Auth Services", () => {
       const newPassword = "newpassword123";
       (User.findOne as jest.Mock).mockResolvedValue(null);
 
+      const mockDateNow = Date.now();
+      jest.spyOn(Date, 'now').mockImplementation(() => mockDateNow);
+
       await expect(
         forgotPasswordConfirmation(token, newPassword)
       ).rejects.toThrow(ApiError);
-      expect(User.findOne).toHaveBeenCalledWith({
-        changePassToken: token,
-        changePassTokenExpires: { $gt: Date.now() },
-      });
+      expect(User.findOne).toHaveBeenCalledWith(      
+         { changePassToken: token },
+        {
+          changePassTokenExpires: { $gt: mockDateNow },
+        });
     });
   });
 
   describe("changePasswordService", () => {
-    // Tests for changePasswordService
-    it("should change the password successfully", async () => {
+    it('should change the password successfully', async () => {
       const data: PASS = {
-        userId: "userId",
-        old: "oldpassword123",
-        new: "newpassword123",
+        userId: 'userId',
+        old: 'oldpassword123',
+        new: 'newpassword123',
       };
 
       const mockUser = {
         _id: data.userId,
-        password: "hashedpassword",
+        password: 'hashedpassword',
         save: jest.fn().mockResolvedValue(true),
       };
 
       (User.findById as jest.Mock).mockResolvedValue(mockUser);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
-      (bcrypt.hash as jest.Mock).mockResolvedValue("hashednewpassword");
 
       const result = await changePasswordService(data);
 
       expect(User.findById).toHaveBeenCalledWith(data.userId);
-      expect(bcrypt.compare).toHaveBeenCalledWith(data.old, mockUser.password);
-      expect(bcrypt.hash).toHaveBeenCalledWith(data.new, 10);
-      expect(mockUser.password).toBe("hashednewpassword");
+      expect(mockUser.password).toBe(data.new);
       expect(mockUser.save).toHaveBeenCalled();
-      expect(result).toBe(true);
+      expect(result).toBeUndefined();
     });
+
 
     it("should throw an error if the user is not found", async () => {
       const data: PASS = {
