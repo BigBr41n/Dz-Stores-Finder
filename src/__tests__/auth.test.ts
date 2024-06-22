@@ -97,7 +97,7 @@ describe("Auth Services", () => {
       } */
 
       await expect(signUpService(userData)).rejects.toThrow(ApiError);
-      expect(User.findOne).toHaveBeenCalledWith({ email: userData.email });
+      expect(User.findOne).toHaveBeenCalledWith({email: userData.email});
       expect(User.create).not.toHaveBeenCalled();
       expect(sendActivationEmail).not.toHaveBeenCalled();
     });
