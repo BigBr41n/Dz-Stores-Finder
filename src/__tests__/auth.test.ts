@@ -33,6 +33,9 @@ describe("Auth Services", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   describe("signUpService", () => {
     it('should register a new user successfully', async () => {
@@ -90,11 +93,11 @@ describe("Auth Services", () => {
       (User.findOne as jest.Mock).mockResolvedValue(userData);
 
 
- /*      try {
+       try {
         await signUpService(userData);
       } catch (err) {
         console.log('Caught error:', err);
-      } */
+      } 
 
       await expect(signUpService(userData)).rejects.toThrow(ApiError);
       expect(User.findOne).toHaveBeenCalledWith({email: userData.email});

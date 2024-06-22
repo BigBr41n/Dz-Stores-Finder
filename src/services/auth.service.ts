@@ -32,11 +32,12 @@ export const signUpService = async (
   userData: SIGNUP
 ): Promise<IUserDocument | undefined> => {
   try {
+    const user = await User.findOne({ email: userData.email });
+    if (user) throw new ApiError("Email already  Exists", 401);
+
     const activationToken = crypto.randomBytes(32).toString("hex");
     const activeExpires = Date.now() + 1000 * 60 * 60;
 
-    const user = await User.findOne({ email: userData.email });
-    if (user) throw new ApiError("Email already  Exists", 401);
 
     const newUser = await User.create({
       name: userData.name,
@@ -62,7 +63,7 @@ export const signUpService = async (
 
     //delete the user from the DB to avoid any error in the next registration
     await User.findOneAndDelete({ email: userData.email });
-    throw new ApiError("Sign up failed", 500);
+    throw new ApiError(err, 500);
   }
 };
 
